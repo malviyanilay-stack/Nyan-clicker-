@@ -1,17 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Nyan Cat Clicker</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Nyan Cat Clicker!</h1>
-    <div class="game-container">
-        <img id="nyanCat" src="https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22310826/poptart1redrainbowfix_1.gif?quality=90&strip=all&crop=0%2C16.666666666667%2C100%2C66.666666666667&w=1440" alt="Nyan Cat">
-        <p>Clicks: <span id="score">0</span></p>
-    </div>
+    <header>
+        <h1>Nyan Cat Clicker!</h1>
+        <p class="subtitle">Click the Nyan Cat or press Space — buy upgrades, auto-click, and go for the high score!</p>
+    </header>
+
+    <main class="game-container">
+        <section class="cat-section">
+            <div class="nyan-wrapper" title="Click or press Space">
+                <img id="nyanCat" src="https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22310826/poptart1redrainbowfix_1.gif?quality=90&strip=all&crop=0%2C16.666666666667%2C100%2C66.666666666667&w=1440" alt="Nyan Cat GIF">
+            </div>
+
+            <div class="stats">
+                <p>Score: <strong id="score">0</strong></p>
+                <p>High Score: <strong id="highScore">0</strong></p>
+                <p>Clicks / second (CPS): <strong id="cps">0</strong></p>
+            </div>
+
+            <div class="controls">
+                <button id="resetBtn" class="btn">Reset</button>
+                <button id="saveBtn" class="btn">Save</button>
+                <button id="exportBtn" class="btn">Export Save</button>
+                <button id="soundToggle" class="btn">Sound: On</button>
+            </div>
+        </section>
+
+        <aside class="shop">
+            <h2>Upgrades</h2>
+            <div id="upgradesList" class="upgrades-list"></div>
+        </aside>
+    </main>
+
+    <footer>
+        <p class="hint">Tip: Press Space to click. Your progress is saved automatically.</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
