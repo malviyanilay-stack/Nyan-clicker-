@@ -1,31 +1,150 @@
-body {
-    background: #ffe0f0;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+/* Nyan Clicker - style.css */
+:root{
+  --bg:#0d0d1a;
+  --panel:#111126;
+  --accent:#ff66cc;
+  --muted:#9aa0a6;
+  --glass: rgba(255,255,255,0.04);
 }
 
-h1 {
-    margin-top: 30px;
-    color: #ff3399;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #050515 0%, #0d0d1a 100%);
+  color:#e6eef8;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:24px;
 }
 
-.game-container {
-    margin-top: 50px;
+header h1{
+  margin:0 0 6px 0;
+  text-align:center;
+  font-size:2rem;
+  letter-spacing:1px;
+}
+.subtitle{
+  margin:0 0 18px 0;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.95rem;
 }
 
-#nyanCat {
-    width: 250px;
-    cursor: pointer;
-    transition: transform 0.1s;
+.game-container{
+  display:flex;
+  gap:20px;
+  width:100%;
+  max-width:1000px;
+  align-items:flex-start;
 }
 
-#nyanCat:active {
-    transform: scale(1.1);
+.cat-section{
+  flex:1;
+  background:var(--panel);
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
 }
 
-p {
-    font-size: 24px;
-    color: #333;
+.nyan-wrapper{
+  width:320px;
+  max-width:90%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:var(--glass);
+  border-radius:12px;
+  padding:14px;
+  cursor:pointer;
+  transition:transform .12s ease;
 }
+
+.nyan-wrapper img{
+  width:100%;
+  max-width:300px;
+  display:block;
+  user-select:none;
+  pointer-events:none;
+}
+
+/* pop animation when clicked */
+.pop{
+  transform:scale(1.06);
+  transition:transform .12s ease;
+  filter:drop-shadow(0 6px 14px rgba(255,102,204,0.18));
+}
+
+.stats{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  color:var(--muted);
+}
+.stats p{margin:0;font-weight:600}
+.stats strong{color:#fff;font-size:1.15rem}
+
+.controls{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.btn{
+  background:linear-gradient(180deg,#1a1a2b,#141421);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.05);
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  box-shadow:0 6px 14px rgba(0,0,0,0.45);
+}
+.btn:hover{transform:translateY(-2px)}
+
+.shop{
+  width:320px;
+  max-width:35%;
+  min-width:220px;
+  background:var(--panel);
+  border-radius:12px;
+  padding:14px;
+  color:var(--muted);
+  box-shadow:0 8px 22px rgba(0,0,0,0.45);
+}
+.shop h2{margin:0 0 12px 0;color:#fff}
+
+.upgrades-list{display:flex;flex-direction:column;gap:10px}
+.upgrade{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  padding:8px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.03);
+}
+.upgrade-title{font-weight:700}
+.upgrade-desc{font-size:0.85rem;color:var(--muted)}
+.upgrade-actions{display:flex;gap:8px;align-items:center}
+.upgrade-cost{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:6px;font-weight:700}
+
+footer{margin-top:18px;color:var(--muted);font-size:0.9rem}
+
+/* Responsive */
+@media (max-width:920px){
+  .game-container{flex-direction:column;align-items:center}
+  .shop{max-width:90%;width:100%}
+}
+
+/* small tweaks */
+.hint{opacity:0.9}
