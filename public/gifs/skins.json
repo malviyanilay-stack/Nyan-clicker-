@@ -2,11 +2,11 @@
   {
     "id": "rainbow",
     "name": "Rainbow",
-    "url": "/gifs/nyan-cat-rainbow.gif"
+    "url": "/gifs/nyan-cat%20Rainbow.gif"
   },
   {
     "id": "pickachu",
     "name": "Pickachu",
-    "url": "/gifs/nyan-cat-pikachu.gif"
+    "url": "/gifs/nyan-cat%20Pikachu.gif"
   }
 ]
