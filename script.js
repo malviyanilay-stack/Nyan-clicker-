@@ -70,7 +70,7 @@
     pikachu:    { name: 'Pikachu',   url: 'https://iili.io/fCZ41LX.gif' },
     rainbow:    { name: 'Rainbow',   url: 'https://iili.io/fCZbHyg.gif' },
     glitch:    { name: 'Glitch',   url: 'https://iili.io/fCtEgIV.gif' },
-    deadly:    { name: 'Deadly',   url: 'https://iili.io/fCti4Hb.gif' },
+    ninja:    { name: 'Ninja',   url: 'https://iili.io/fCD2KUx.gif' },
     pastel:   { name: 'Electro',  url: 'https://iili.io/fCt17cb.gif' }
   };
 
