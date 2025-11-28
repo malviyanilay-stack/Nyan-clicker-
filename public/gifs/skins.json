@@ -1,0 +1,12 @@
+[
+  {
+    "id": "rainbow",
+    "name": "Rainbow",
+    "url": "public/gifs/nyan-cat%20Rainbow.gif"
+  },
+  {
+    "id": "pickachu",
+    "name": "Pickachu",
+    "url": "public/gifs/nyan-cat%20Pikachu.gif"
+  }
+]
