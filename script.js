@@ -67,9 +67,10 @@
   // === Skins (fallback-safe) ===
   const skins = {
     classic: { name: 'Classic', url: 'https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif' },
-    retro:    { name: 'Pikachu',   url: 'https://iili.io/fCZ41LX.gif' },
-    prism:    { name: 'Rainbow',   url: 'https://iili.io/fCZbHyg.gif' },
-    pastel:   { name: 'Pastel',  url: 'https://media.giphy.com/media/8YutMatqkTfSE/giphy.gif' }
+    pikachu:    { name: 'Pikachu',   url: 'https://iili.io/fCZ41LX.gif' },
+    rainbow:    { name: 'Rainbow',   url: 'https://iili.io/fCZbHyg.gif' },
+    glitch:    { name: 'Glitch',   url: 'https://iili.io/fCtEgIV.gif' },
+    pastel:   { name: 'Electro',  url: 'https://iili.io/fCt17cb.gif' }
   };
 
   // fallback SVG data URL (simple, always available)
