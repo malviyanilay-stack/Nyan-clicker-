@@ -2,11 +2,11 @@
   {
     "id": "rainbow",
     "name": "Rainbow",
-    "url": "/gifs/nyan-cat%20Rainbow.gif"
+    "url": "https://raw.githubusercontent.com/Gamer-boy272882819282/Nyan-clicker-/main/public/gifs/nyan-cat%20Rainbow.gif"
   },
   {
     "id": "pickachu",
     "name": "Pickachu",
-    "url": "/gifs/nyan-cat%20Pikachu.gif"
+    "url": "https://raw.githubusercontent.com/Gamer-boy272882819282/Nyan-clicker-/main/public/gifs/nyan-cat%20Pikachu.gif"
   }
 ]
