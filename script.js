@@ -67,8 +67,8 @@
   // === Skins (fallback-safe) ===
   const skins = {
     classic: { name: 'Classic', url: 'https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif' },
-    retro:    { name: 'Retro',   url: 'https://media.giphy.com/media/Usmcx3m9S8m8I/giphy.gif' },
-    prism:    { name: 'Prism',   url: 'https://media.giphy.com/media/3o6ZsZ7jK3bzn7uV2k/giphy.gif' },
+    retro:    { name: 'Pikachu',   url: 'https://iili.io/fCZ41LX.gif' },
+    prism:    { name: 'Rainbow',   url: 'https://iili.io/fCZbHyg.gif' },
     pastel:   { name: 'Pastel',  url: 'https://media.giphy.com/media/8YutMatqkTfSE/giphy.gif' }
   };
 
