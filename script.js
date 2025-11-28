@@ -1,14 +1,8 @@
-// Updated script.js — manifest load from public/gifs/skins.json (preferred), Classic + repo GIF skins only
-// This file keeps the game's features and only changes the skins-loading behavior to follow your "public/gifs" approach.
-
-// Note: This is a drop-in replacement for the repo script.js. It:
-// - Loads ./public/gifs/skins.json if present, merges entries (up to all entries).
-// - Shows only Classic + the manifest skins in the Skins panel.
-// - Persists selection to localStorage under 'nyan_selected_skin'.
-// - Uses relative URLs so skins come from the public/gifs folder in your repo.
+// Updated script.js — manifest now preferred at /gifs/skins.json (root), clean filenames and Vercel-safe paths.
+// This is a drop-in replacement. It preserves all game logic and only adjusts skins manifest loading and robust path handling.
 
 (function () {
-  // --- DOM ---
+  // --- DOM references ---
   const nyan = document.getElementById('nyanCat');
   const nyanContainer = document.getElementById('nyanContainer');
   const scoreEl = document.getElementById('score');
@@ -66,12 +60,12 @@
 
   let state = JSON.parse(JSON.stringify(defaultState));
 
-  // --- Built-in skin: only Classic here; manifest will add the repo skins ---
+  // --- Skins: only Classic built-in; manifest will add repo skins from /gifs/ ---
   let skins = {
     classic: { name: 'Classic', url: 'https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif' }
   };
 
-  // fallback SVG (data URL)
+  // fallback SVG data URL
   const FALLBACK_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240">' +
     '<rect width="100%" height="100%" fill="#111126"/>' +
@@ -79,7 +73,7 @@
     '</svg>'
   );
 
-  // ---- Utilities ----
+  // --- Utilities ---
   const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
   const rand = (a,b) => a + Math.random()*(b-a);
   const formatNum = n => (n >= 1000000 ? (n/1000000).toFixed(2) + 'M' : Math.floor(n).toString());
@@ -91,7 +85,7 @@
     setTimeout(()=> { t.classList.remove('visible'); setTimeout(()=> t.remove(), 260); }, ms);
   }
 
-  // ---- Save/load with validation & backup ----
+  // --- Save / Load with validation & backup ---
   function isObject(v){ return v && typeof v === 'object' && !Array.isArray(v); }
 
   function validateAndNormalize(loaded) {
@@ -162,55 +156,57 @@
     showToast('Progress reset');
   }
 
-  // ---- Image fallback handler ----
+  // --- Image fallback handler ---
   nyan.addEventListener('error', () => {
     if (nyan.src !== FALLBACK_SVG) nyan.src = FALLBACK_SVG;
   });
 
   function applySkin(skinKey) {
     if (!skins[skinKey]) return;
-    // use relative URL as provided in manifest or built-in entry
     nyan.src = skins[skinKey].url;
   }
 
-  // ---- Skins manifest loading: prefer public/gifs/skins.json (your way) ----
+  // --- Skins manifest loading: prefer root /gifs/skins.json (Vercel-style) ---
   async function loadSkinsManifest() {
-    // First try the user's requested path
-    const manifestPaths = [
-      './public/gifs/skins.json',    // your requested path (preferred)
-      './assets/skins/skins.json'    // older/default fallback if present
+    // Prefer root-relative manifest so files under public/ are exposed at /gifs/...
+    const manifestUrls = [
+      '/gifs/skins.json',       // preferred on Vercel / static public
+      './public/gifs/skins.json',
+      './assets/skins/skins.json'
     ];
-    for (const manifestUrl of manifestPaths) {
+    for (const manifestUrl of manifestUrls) {
       try {
         const res = await fetch(manifestUrl, { cache: 'no-store' });
         if (!res.ok) continue;
         const list = await res.json();
         if (!Array.isArray(list)) continue;
-        // Merge manifest entries into skins (keep 'classic' built-in)
         for (const item of list) {
           if (!item || !item.id || !item.url) continue;
+          // canonicalize id
           const id = String(item.id).trim().toLowerCase().replace(/\s+/g,'_');
           const name = item.name ? String(item.name) : id;
-          // Accept relative paths as-is (so 'public/gifs/...' works)
-          skins[id] = { name, url: item.url };
+          // If manifest provides a root-relative URL (e.g. "/gifs/xxx.gif") use it as-is.
+          // If it provides a relative path like "public/gifs/xxx.gif", convert to root form.
+          let url = String(item.url);
+          // Convert leading "./public/gifs/..." or "public/gifs/..." to "/gifs/..."
+          url = url.replace(/^\.\//, '');
+          url = url.replace(/^public\/gifs\//i, '/gifs/');
+          // If url starts with '/gifs/' or '/assets/...' it's fine; if it is raw github, keep as-is.
+          skins[id] = { name, url };
         }
-        // stop after first successful manifest
         return true;
       } catch (e) {
-        // ignore and try next manifest path
         continue;
       }
     }
     return false;
   }
 
-  // ---- Skins UI ----
+  // --- Render skins UI (only Classic + manifest-provided skins) ---
   function renderSkins() {
     if (!skinsListEl) return;
     skinsListEl.innerHTML = '';
-    // Show only 'classic' + manifest-provided skins (i.e. keys in skins, excluding any other built-ins)
     const keys = Object.keys(skins);
-    // ensure classic first
     const ordered = keys.filter(k => k === 'classic').concat(keys.filter(k => k !== 'classic'));
     const saved = (function(){ try { return localStorage.getItem('nyan_selected_skin'); } catch(e){ return null; }})();
     ordered.forEach(k => {
@@ -218,7 +214,6 @@
       if (!s) return;
       const d = document.createElement('div');
       d.className = 'skin' + (saved === k ? ' selected' : '');
-      // show thumbnail using provided URL (browser will request it relative to site)
       const safeUrl = s.url;
       d.innerHTML = `<img src="${safeUrl}" alt="${s.name}"><div class="skin-label">${s.name}</div>`;
       d.addEventListener('click', () => {
@@ -229,14 +224,13 @@
         try { localStorage.setItem('nyan_selected_skin', k); } catch (e) {}
         showToast('Skin: ' + s.name);
       });
-      // fallback for thumbnail failure
       const img = d.querySelector('img');
       img.addEventListener('error', () => { img.src = FALLBACK_SVG; });
       skinsListEl.appendChild(d);
     });
   }
 
-  // ---- Particle system minimal (keeps existing functionality) ----
+  // --- Keep particle + visuals behavior (unchanged) ---
   let particles = [];
   function alignCanvas() {
     if (!canvas || !ctx) return;
@@ -301,7 +295,7 @@
   window.addEventListener('resize', alignCanvas);
   setTimeout(()=>{ alignCanvas(); if (ctx) requestAnimationFrame(tickParticles); }, 50);
 
-  // ---- Audio (kept minimal) ----
+  // --- Audio (minimal) ---
   let audioCtx = null;
   function ensureAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
   function playClickSound(crit=false) {
@@ -341,7 +335,7 @@
     } catch(e){}
   }
 
-  // ---- Game click/combo/crit logic (kept from existing behavior) ----
+  // --- Click/combo/crit logic (kept) ---
   const COMBO_TIMEOUT = 900;
   let combo = { streak: 0, lastClick: 0 };
 
@@ -409,7 +403,6 @@
     }
   }
 
-  // floating texts
   function spawnFloatingTextAt(x,y,text,crit=false) {
     const el = document.createElement('div');
     el.className = 'float-text' + (crit ? ' crit' : '');
@@ -422,7 +415,7 @@
     setTimeout(()=> el.remove(), 900);
   }
 
-  // ---- Upgrades (kept) ----
+  // --- Upgrades (kept) ---
   function costForUpgrade(base, level) { return Math.max(1, Math.floor(base * Math.pow(1.15, level))); }
   function canAfford(cost) { return getStars() >= cost; }
 
@@ -480,7 +473,7 @@
     return '';
   }
 
-  // ---- Achievements (kept minimal) ----
+  // --- Achievements (kept) ---
   const ACHIEVEMENTS = [
     { id: 'first_click', title: 'First Click', desc: 'Make your first click', reward: { score: 10 }, predicate: s => s._meta && s._meta.totalClicks >= 1 },
     { id: 'reach_100', title: 'Hundred Star', desc: 'Reach 100 stars', reward: { score: 20 }, predicate: s => s.highScore >= 100 },
@@ -510,7 +503,7 @@
     }
   }
 
-  // ---- UI updates ----
+  // --- UI updates ---
   function updateUI() {
     if (scoreEl) scoreEl.textContent = formatNum(state.score);
     if (highScoreEl) highScoreEl.textContent = formatNum(state.highScore);
@@ -531,7 +524,7 @@
     renderAchievements();
   }
 
-  // ---- Event bindings ----
+  // --- Event bindings & pointer handlers ---
   function enablePointerHandlers(enable) {
     nyanContainer.removeEventListener('pointerdown', onPointerDown);
     nyanContainer.removeEventListener('touchstart', onPointerDown);
@@ -593,16 +586,14 @@
   soundToggle && soundToggle.addEventListener('click', () => { state.sound = !state.sound; updateUI(); save(); if (state.sound) ensureAudio(); });
   musicToggle && musicToggle.addEventListener('click', () => { state.music = !state.music; updateUI(); save(); if (state.music) startAmbient(); else stopAmbient(); });
 
-  // settings toggles reflect state (already handled when modal opens)
-
-  // ---- Autosave ----
+  // --- Autosave ---
   let autosaveHandle = null;
   function restartAutosave() {
     if (autosaveHandle) clearInterval(autosaveHandle);
     autosaveHandle = setInterval(() => { save(); }, Math.max(1000, (state.autosaveSec || 5) * 1000));
   }
 
-  // ---- Init load & manifest -> render ----
+  // --- Init: load -> manifest -> render ---
   (async function init() {
     const loaded = load();
     if (!loaded) {
@@ -611,16 +602,14 @@
       state._meta = { bestStreak: 0, totalClicks: 0 };
       save();
     }
-    // try loading the skins manifest from public/gifs first (your chosen location)
+    // try to load /gifs/skins.json (root) — most Vercel / static hosts expose public/ files at root
     await loadSkinsManifest();
-    // if user previously saved a skin, apply it if present
     try {
       const saved = localStorage.getItem('nyan_selected_skin');
       if (saved && skins[saved]) {
         state.selectedSkin = saved;
         applySkin(saved);
       } else {
-        // ensure default remains classic
         state.selectedSkin = state.selectedSkin || 'classic';
         applySkin(state.selectedSkin);
       }
@@ -633,11 +622,10 @@
     if (state.music) startAmbient();
     if (ctx) { alignCanvas(); requestAnimationFrame(tickParticles); }
     checkAchievements();
-    // ensure canvas aligns once the image loads
     nyan.addEventListener('load', () => { alignCanvas(); });
   })();
 
-  // beforeunload save
+  // beforeunload flush
   window.addEventListener('beforeunload', () => { try { save(); } catch(e){} });
 
 })();
