@@ -1,17 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nyan Cat Clicker</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nyan Cat Clicker</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Nyan Cat Clicker!</h1>
-    <div class="game-container">
-        <img id="nyanCat" src="https://i.imgur.com/Qs8C4iS.gif" alt="Nyan Cat">
-        <p>Clicks: <span id="score">0</span></p>
+  <div id="appRoot" class="app-root">
+    <header class="topbar">
+      <h1>Nyan Cat Clicker</h1>
+      <div class="topbar-right">
+        <div class="currency">Stars: <strong id="stars">0</strong></div>
+        <button id="settingsBtn" class="btn icon">⚙️</button>
+      </div>
+    </header>
+
+    <main class="main-area">
+      <section class="center-area">
+        <div class="nyan-container" id="nyanContainer" title="Click or press Space">
+          <img id="nyanCat" alt="Nyan Cat" src="https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif" />
+          <canvas id="particles" class="particles"></canvas>
+        </div>
+
+        <div class="combo-row">
+          <div class="stat">Score: <strong id="score">0</strong></div>
+          <div class="stat">High: <strong id="highScore">0</strong></div>
+          <div class="stat">CPS: <strong id="cps">0</strong></div>
+          <div class="stat">Combo: <strong id="combo">x1</strong></div>
+        </div>
+
+        <div class="controls">
+          <button id="saveBtn" class="btn">Save</button>
+          <button id="exportBtn" class="btn">Export</button>
+          <button id="soundToggle" class="btn">Sound: On</button>
+          <button id="musicToggle" class="btn">Music: Off</button>
+          <button id="resetBtn" class="btn danger">Reset</button>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="panel">
+          <h2>Upgrades</h2>
+          <div id="upgradesList" class="upgrades-list"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Skins</h2>
+          <div id="skinsList" class="skins-list"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Achievements</h2>
+          <div id="achievementsList" class="achievements-list"></div>
+        </div>
+      </aside>
+    </main>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+
+    <!-- Settings modal -->
+    <div id="settingsModal" class="modal" aria-hidden="true">
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <h3 id="settingsTitle">Settings</h3>
+        <div class="setting">
+          <label><input id="settingSound" type="checkbox"> Enable Sound</label>
+        </div>
+        <div class="setting">
+          <label><input id="settingMusic" type="checkbox"> Background Music</label>
+        </div>
+        <div class="setting">
+          <label><input id="settingTouch" type="checkbox"> Touch & Pointer Support</label>
+        </div>
+        <div class="setting">
+          <label>Autosave interval (seconds):
+            <input id="settingAutosave" type="number" min="1" max="60" step="1" value="5">
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button id="importBtn" class="btn">Import Save</button>
+          <button id="closeSettings" class="btn">Close</button>
+        </div>
+      </div>
     </div>
-    <script src="script.js"></script>
+
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
